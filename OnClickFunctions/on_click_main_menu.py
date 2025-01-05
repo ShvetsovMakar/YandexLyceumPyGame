@@ -1,13 +1,13 @@
 import pygame
 import sys
 
-def exit_button(game):
+def exit(game):
     pygame.quit()
     sys.exit()
 
-def add_character_button(game):
+def add_character(game):
     game.add_character()
 
 
-def play_button(game):
+def play(game):
     game.play()

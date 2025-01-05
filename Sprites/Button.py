@@ -9,12 +9,11 @@ class Button(Label):
 
         self.on_click = on_click
 
+        self.basic_image_path = image_path
         self.hovered_over_image_path = hovered_over_image_path
 
     def set_hovered_on_image(self):
-        image = pygame.image.load(self.hovered_over_image_path)
-        self.image = pygame.transform.scale(image, (self.width, self.height))
+        self.change_image(self.hovered_over_image_path)
 
     def set_basic_image(self):
-        image = pygame.image.load(self.image_path)
-        self.image = pygame.transform.scale(image, (self.width, self.height))
+        self.change_image(self.basic_image_path)
