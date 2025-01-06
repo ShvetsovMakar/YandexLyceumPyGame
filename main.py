@@ -5,6 +5,8 @@ from OnClickFunctions import on_click_main_menu, on_click_add_character
 
 from Sprites.Button import Button
 from Sprites.Label import Label
+from Sprites.TextBox import TextBox
+from Sprites.InputBox import InputBox
 
 
 class Game:
@@ -136,15 +138,33 @@ class Game:
                                   "Graphics/characters/Witcher.png",
                                   "Graphics/characters/Kratos.png",
                                   "Graphics/characters/Griffith.png"]
-        character_index = 0
 
         width = self.height // 2
         height = self.height // 2
 
-        character = Label(character_images_paths[character_index],
+        character = Label(character_images_paths[0],
                           (self.width // 2 - width // 2, self.height // 2 - height // 2),
                           (width, height),
                           labels)
+
+        # Initializing text boxes
+        text_boxes = []
+
+        character_names = ["Guts",
+                           "Witcher",
+                           "Kratos",
+                           "Griffith"]
+
+        character_name = TextBox(character_names[0],
+                                 pygame.font.Font("Fonts/Norse/basic.otf", self.width // 40),
+                                 (self.width // 2, self.height // 2 - self.height // 4 - self.width // 40),
+                                 (0, 0, 0),
+                                 None,
+                                 None)
+        text_boxes.append(character_name)
+
+        # Initializing character index in lists of names and images paths
+        character_index = 0
 
         # Add character loop
         while True:
@@ -161,6 +181,7 @@ class Game:
                             else:
                                 character_index = button.on_click(self, character_index)[1]
                                 character.change_image(character_images_paths[character_index])
+                                character_name.change_text(character_names[character_index])
 
             # Updating buttons' images
             for button in buttons:
@@ -174,6 +195,8 @@ class Game:
 
             labels.draw(self.screen)
             buttons.draw(self.screen)
+            for text_box in text_boxes:
+                text_box.draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)
