@@ -24,24 +24,24 @@ class Game:
         width = self.width // 2
         height = self.height // 8
 
-        exit_button = Button('Graphics/main_menu/exit_button/basic.png',
-                             'Graphics/main_menu/exit_button/hovered_on.png',
+        exit_button = Button('Graphics/MainMenu/ExitButton/basic.png',
+                             'Graphics/MainMenu/ExitButton/hovered_on.png',
                              (self.width // 2 - width // 2,
                               self.height // 4 * 3 - height // 2),
                              (width, height),
                              buttons,
                              on_click_main_menu.exit)
 
-        add_character_button = Button('Graphics/main_menu/add_character_button/basic.png',
-                                      'Graphics/main_menu/add_character_button/hovered_on.png',
+        add_character_button = Button('Graphics/MainMenu/AddCharacterButton/basic.png',
+                                      'Graphics/MainMenu/AddCharacterButton/hovered_on.png',
                                       (self.width // 2 - width // 2,
                                        self.height // 4 * 3 - height // 2 - height - height // 5),
                                       (width, height),
                                       buttons,
                                       on_click_main_menu.add_character)
 
-        play_button = Button('Graphics/main_menu/play_button/basic.png',
-                             'Graphics/main_menu/play_button/hovered_on.png',
+        play_button = Button('Graphics/MainMenu/PlayButton/basic.png',
+                             'Graphics/MainMenu/PlayButton/hovered_on.png',
                              (self.width // 2 - width // 2,
                               self.height // 4 * 3 - height // 2 - 2 * (height + height // 5)),
                              (width, height),
@@ -51,7 +51,7 @@ class Game:
         # Initializing labels
         labels = pygame.sprite.Group()
 
-        background = Label('Graphics/main_menu/background/basic.png',
+        background = Label('Graphics/MainMenu/Background/basic.png',
                            (0, 0),
                            (self.width, self.height),
                            labels)
@@ -91,16 +91,16 @@ class Game:
         width = self.width // 20
         height = self.height // 5
 
-        forward_button = Button('Graphics/add_character/forward_button/basic.png',
-                                'Graphics/add_character/forward_button/hovered_on.png',
+        forward_button = Button('Graphics/AddCharacter/ForwardButton/basic.png',
+                                'Graphics/AddCharacter/ForwardButton/hovered_on.png',
                                 (self.width // 2 + self.width // 5 - width // 2,
                                  self.height // 2 - height // 2),
                                 (width, height),
                                 buttons,
                                 on_click_add_character.forward)
 
-        backward_button = Button('Graphics/add_character/backward_button/basic.png',
-                                 'Graphics/add_character/backward_button/hovered_on.png',
+        backward_button = Button('Graphics/AddCharacter/BackwardButton/basic.png',
+                                 'Graphics/AddCharacter/BackwardButton/hovered_on.png',
                                  (self.width // 2 - self.width // 5 - width // 2,
                                   self.height // 2 - height // 2),
                                  (width, height),
@@ -110,16 +110,16 @@ class Game:
         width = self.width // 4
         height = self.height // 10
 
-        to_main_menu_button = Button('Graphics/add_character/to_main_menu_button/basic.png',
-                                     'Graphics/add_character/to_main_menu_button/hovered_on.png',
+        to_main_menu_button = Button('Graphics/AddCharacter/ToMainMenuButton/basic.png',
+                                     'Graphics/AddCharacter/ToMainMenuButton/hovered_on.png',
                                      (self.width // 2 - width - width // 50,
                                       self.height // 10 * 9 - height),
                                      (width, height),
                                      buttons,
                                      on_click_add_character.to_main_menu)
 
-        create_character_button = Button('Graphics/add_character/create_character_button/basic.png',
-                                         'Graphics/add_character/create_character_button/hovered_on.png',
+        create_character_button = Button('Graphics/AddCharacter/CreateCharacterButton/basic.png',
+                                         'Graphics/AddCharacter/CreateCharacterButton/hovered_on.png',
                                          (self.width // 2 + width // 50,
                                           self.height // 10 * 9 - height),
                                          (width, height),
@@ -129,15 +129,15 @@ class Game:
         # Initializing labels
         labels = pygame.sprite.Group()
 
-        background = Label('Graphics/add_character/background/basic.png',
+        background = Label('Graphics/AddCharacter/Background/basic.png',
                            (0, 0),
                            (self.width, self.height),
                            labels)
 
-        character_images_paths = ["Graphics/characters/Guts.png",
-                                  "Graphics/characters/Witcher.png",
-                                  "Graphics/characters/Kratos.png",
-                                  "Graphics/characters/Griffith.png"]
+        character_images_paths = ["Graphics/Characters/Guts.png",
+                                  "Graphics/Characters/Witcher.png",
+                                  "Graphics/Characters/Kratos.png",
+                                  "Graphics/Characters/Griffith.png"]
 
         width = self.height // 2
         height = self.height // 2
