@@ -1,6 +1,8 @@
 import pygame
 import sys
 
+from Config.constants import *
+
 from OnClickFunctions import on_click_main_menu, on_click_add_character
 
 from Sprites.Button import Button
@@ -156,12 +158,26 @@ class Game:
                            "Griffith"]
 
         character_name = TextBox(character_names[0],
-                                 pygame.font.Font("Fonts/Norse/basic.otf", self.width // 40),
+                                 pygame.font.Font("Fonts/Norse/bold.otf", self.width // 40),
                                  (self.width // 2, self.height // 2 - self.height // 4 - self.width // 40),
                                  (0, 0, 0),
                                  None,
                                  None)
         text_boxes.append(character_name)
+
+        # Initializing input boxes
+        input_boxes = []
+
+        input_name = InputBox("",
+                              pygame.font.Font("Fonts/Norse/basic.otf", self.width // 40),
+                              (self.width // 3, self.width // 32),
+                              (self.width // 3, self.height // 20),
+                              MAX_NAME_LENGTH,
+                              (0, 0, 0),
+                              (255, 255, 255),
+                              (200, 200, 200),
+                              (0, 0, 0))
+        input_boxes.append(input_name)
 
         # Initializing character index in lists of names and images paths
         character_index = 0
@@ -174,6 +190,9 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    x = pygame.mouse.get_pos()[0]
+                    y = pygame.mouse.get_pos()[1]
+
                     for button in buttons:
                         if button.rect.collidepoint(pygame.mouse.get_pos()):
                             if button.on_click(self, character_index)[0]:
@@ -182,6 +201,24 @@ class Game:
                                 character_index = button.on_click(self, character_index)[1]
                                 character.change_image(character_images_paths[character_index])
                                 character_name.change_text(character_names[character_index])
+
+                    for input_box in input_boxes:
+                        input_box.active = (input_box.x <= x <= input_box.x + input_box.width and
+                                            input_box.y <= y <= input_box.y + input_box.height)
+
+                if event.type == pygame.KEYDOWN:
+                    for input_box in input_boxes:
+                        if not input_box.active:
+                            continue
+
+                        if event.key == pygame.K_RETURN:
+                            input_box.active = False
+                        elif event.key == pygame.K_BACKSPACE:
+                            input_box.text = input_box.text[:-1]
+                        elif len(input_box.text) < input_box.max_length:
+                            input_box.text += event.unicode
+
+                        break
 
             # Updating buttons' images
             for button in buttons:
@@ -197,6 +234,8 @@ class Game:
             buttons.draw(self.screen)
             for text_box in text_boxes:
                 text_box.draw(self.screen)
+            for input_box in input_boxes:
+                input_box.draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)
@@ -205,9 +244,8 @@ class Game:
         pass
 
 
-# Initializing pygame and game constants
+# Initializing all pygame modules
 pygame.init()
-FPS = 90
 
 # Starting game
 game = Game()
