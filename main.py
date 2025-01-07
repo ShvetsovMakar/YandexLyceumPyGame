@@ -199,6 +199,7 @@ class Game:
                                 return
                             else:
                                 character_index = button.on_click(self, character_index)[1]
+
                                 character.change_image(character_images_paths[character_index])
                                 character_name.change_text(character_names[character_index])
 
@@ -217,7 +218,6 @@ class Game:
                             input_box.text = input_box.text[:-1]
                         elif len(input_box.text) < input_box.max_length:
                             input_box.text += event.unicode
-
                         break
 
             # Updating buttons' images
