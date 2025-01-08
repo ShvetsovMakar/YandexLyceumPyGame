@@ -152,12 +152,7 @@ class Game:
         # Initializing text boxes
         text_boxes = []
 
-        character_names = ["Guts",
-                           "Witcher",
-                           "Kratos",
-                           "Griffith"]
-
-        character_name = TextBox(character_names[0],
+        character_name = TextBox(CHARACTER_NAMES[0],
                                  pygame.font.Font("Fonts/Norse/bold.otf", self.width // 40),
                                  (self.width // 2, self.height // 2 - self.height // 4 - self.width // 40),
                                  (0, 0, 0),
@@ -194,14 +189,17 @@ class Game:
                     y = pygame.mouse.get_pos()[1]
 
                     for button in buttons:
-                        if button.rect.collidepoint(pygame.mouse.get_pos()):
-                            if button.on_click(self, character_index)[0]:
-                                return
-                            else:
-                                character_index = button.on_click(self, character_index)[1]
+                        if not button.rect.collidepoint(pygame.mouse.get_pos()):
+                            continue
 
-                                character.change_image(character_images_paths[character_index])
-                                character_name.change_text(character_names[character_index])
+                        if button.on_click(self, character_index, input_name.text.lower())[0]:
+                            return
+                        else:
+                            character_index = button.on_click(self, character_index, input_name.text.lower())[1]
+
+                            character.change_image(character_images_paths[character_index])
+                            character_name.change_text(CHARACTER_NAMES[character_index])
+                        break
 
                     for input_box in input_boxes:
                         input_box.active = (input_box.x <= x <= input_box.x + input_box.width and

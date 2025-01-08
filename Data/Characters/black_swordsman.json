@@ -1,0 +1,26 @@
+{
+    "name": "black_swordsman",
+    "hero": "Guts",
+    "level": 1,
+    "XP": 0,
+    "gear": {
+        "weapon": {
+            "type": null,
+            "level": null
+        },
+        "armor": {
+            "helmet": {
+                "type": null,
+                "level": null
+            },
+            "breastplate": {
+                "type": null,
+                "level": null
+            },
+            "leggings": {
+                "type": null,
+                "level": null
+            }
+        }
+    }
+}
