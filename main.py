@@ -1,14 +1,17 @@
 import pygame
 import sys
+import os
 
 from Config.constants import *
 
-from OnClickFunctions import on_click_main_menu, on_click_add_character
+from OnClickFunctions import on_click_main_menu, on_click_add_character, on_click_choose_character
 
 from Sprites.Button import Button
 from Sprites.Label import Label
 from Sprites.TextBox import TextBox
 from Sprites.InputBox import InputBox
+
+from Sprites.Character.Character import Character
 
 
 class Game:
@@ -42,13 +45,13 @@ class Game:
                                       buttons,
                                       on_click_main_menu.add_character)
 
-        play_button = Button('Graphics/MainMenu/PlayButton/basic.png',
-                             'Graphics/MainMenu/PlayButton/hovered_on.png',
-                             (self.width // 2 - width // 2,
-                              self.height // 4 * 3 - height // 2 - 2 * (height + height // 5)),
-                             (width, height),
-                             buttons,
-                             on_click_main_menu.play)
+        choose_character_button = Button('Graphics/MainMenu/PlayButton/basic.png',
+                                         'Graphics/MainMenu/PlayButton/hovered_on.png',
+                                         (self.width // 2 - width // 2,
+                                          self.height // 4 * 3 - height // 2 - 2 * (height + height // 5)),
+                                         (width, height),
+                                         buttons,
+                                         on_click_main_menu.play)
 
         # Initializing labels
         labels = pygame.sprite.Group()
@@ -150,29 +153,29 @@ class Game:
                           labels)
 
         # Initializing text boxes
-        text_boxes = []
+        text_boxes = pygame.sprite.Group()
 
         character_name = TextBox(CHARACTER_NAMES[0],
                                  pygame.font.Font("Fonts/Norse/bold.otf", self.width // 40),
                                  (self.width // 2, self.height // 2 - self.height // 4 - self.width // 40),
+                                 text_boxes,
                                  (0, 0, 0),
                                  None,
                                  None)
-        text_boxes.append(character_name)
 
         # Initializing input boxes
-        input_boxes = []
+        input_boxes = pygame.sprite.Group()
 
         input_name = InputBox("",
                               pygame.font.Font("Fonts/Norse/basic.otf", self.width // 40),
                               (self.width // 3, self.width // 32),
                               (self.width // 3, self.height // 20),
                               MAX_NAME_LENGTH,
+                              input_boxes,
                               (0, 0, 0),
                               (255, 255, 255),
                               (200, 200, 200),
                               (0, 0, 0))
-        input_boxes.append(input_name)
 
         # Initializing character index in lists of names and images paths
         character_index = 0
@@ -192,10 +195,10 @@ class Game:
                         if not button.rect.collidepoint(pygame.mouse.get_pos()):
                             continue
 
-                        if button.on_click(self, character_index, input_name.text.lower())[0]:
+                        if button.on_click(character_index, input_name.text.lower())[0]:
                             return
                         else:
-                            character_index = button.on_click(self, character_index, input_name.text.lower())[1]
+                            character_index = button.on_click(character_index, input_name.text.lower())[1]
 
                             character.change_image(character_images_paths[character_index])
                             character_name.change_text(CHARACTER_NAMES[character_index])
@@ -214,7 +217,7 @@ class Game:
                             input_box.active = False
                         elif event.key == pygame.K_BACKSPACE:
                             input_box.text = input_box.text[:-1]
-                        elif len(input_box.text) < input_box.max_length:
+                        elif len(input_box.text) < input_box.max_length and event.unicode not in FORBIDDEN_SYMBOLS:
                             input_box.text += event.unicode
                         break
 
@@ -238,8 +241,103 @@ class Game:
             pygame.display.flip()
             self.clock.tick(FPS)
 
-    def play(self):
-        pass
+    def choose_character(self):
+        # Initializing buttons
+        buttons = pygame.sprite.Group()
+
+        width = self.width // 20
+        height = self.height // 5
+
+        forward_button = Button('Graphics/ChooseCharacter/ForwardButton/basic.png',
+                                'Graphics/ChooseCharacter/ForwardButton/hovered_on.png',
+                                (self.width // 2 + self.width // 5 - width // 2,
+                                 self.height // 2 - height // 2),
+                                (width, height),
+                                buttons,
+                                on_click_choose_character.forward)
+
+        backward_button = Button('Graphics/ChooseCharacter/BackwardButton/basic.png',
+                                 'Graphics/ChooseCharacter/BackwardButton/hovered_on.png',
+                                 (self.width // 2 - self.width // 5 - width // 2,
+                                  self.height // 2 - height // 2),
+                                 (width, height),
+                                 buttons,
+                                 on_click_choose_character.backward)
+
+        width_ = (self.width // 5 * 2 + width) // 2 - self.width // 100
+        height_ = self.height // 10
+
+        to_main_menu_button = Button('Graphics/ChooseCharacter/ToMainMenuButton/basic.png',
+                                     'Graphics/ChooseCharacter/ToMainMenuButton/hovered_on.png',
+                                     (self.width // 2 - self.width // 5 - width // 2,
+                                      self.height // 3 * 2 - height_ // 2),
+                                     (width_, height_),
+                                     buttons,
+                                     on_click_choose_character.to_main_menu)
+
+        play_button = Button('Graphics/ChooseCharacter/PlayButton/basic.png',
+                             'Graphics/ChooseCharacter/PlayButton/hovered_on.png',
+                             (self.width // 2 - self.width // 5 - width // 2 + width_ + self.width // 50,
+                              self.height // 3 * 2 - height_ // 2),
+                             (width_, height_),
+                             buttons,
+                             on_click_choose_character.play)
+
+        # Initializing labels
+        labels = pygame.sprite.Group()
+
+        background = Label('Graphics/ChooseCharacter/Background/basic.png',
+                           (0, 0),
+                           (self.width, self.height),
+                           labels)
+
+        '''
+
+        # Initializing character group
+        characters_filenames = []
+        character_group = pygame.sprite.Group()
+
+        characters = []
+        for filename in os.listdir("Data/Characters"):
+            if os.path.splitext(filename)[-1] == ".json":
+
+                characters_filenames.append(filename)
+        '''
+
+        # Choose character loop
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in buttons:
+                        if button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if not button.rect.collidepoint(pygame.mouse.get_pos()):
+                                continue
+
+                            if button.on_click()[0]:
+                                return
+                            else:
+                                pass
+                            break
+
+            # Updating buttons' images
+            for button in buttons:
+                if button.rect.collidepoint(pygame.mouse.get_pos()):
+                    button.set_hovered_on_image()
+                else:
+                    button.set_basic_image()
+
+            # Updating screen
+            self.screen.fill((0, 0, 0))
+
+            labels.draw(self.screen)
+            buttons.draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
 
 
 # Initializing all pygame modules

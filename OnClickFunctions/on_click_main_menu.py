@@ -1,5 +1,7 @@
 import pygame
 import sys
+import os
+
 
 def exit(game):
     pygame.quit()
@@ -10,4 +12,7 @@ def add_character(game):
 
 
 def play(game):
-    game.play()
+    if not os.listdir("Data/Characters"):
+        game.add_character()
+    else:
+        game.choose_character()

@@ -2,8 +2,10 @@ import pygame
 
 
 class TextBox(pygame.sprite.Sprite):
-    def __init__(self, text, font, position,
+    def __init__(self, text, font, position, sprite_group,
                  text_color, background_color=None, outline_color=None):
+        super().__init__(sprite_group)
+
         self.text = text
 
         self.font = font

@@ -6,3 +6,5 @@ CHARACTER_NAMES = ["Guts",
                    "Witcher",
                    "Kratos",
                    "Griffith"]
+
+FORBIDDEN_SYMBOLS = ['\\']

@@ -4,9 +4,9 @@ from Sprites.TextBox import TextBox
 
 
 class InputBox(TextBox):
-    def __init__(self, text, font, size, position, max_length,
+    def __init__(self, text, font, size, position, max_length, sprite_group,
                  text_color, background_color=None, active_color=None, outline_color=None):
-        super().__init__(text, font, position,
+        super().__init__(text, font, position, sprite_group,
                          text_color, background_color, outline_color)
 
         self.max_length = max_length

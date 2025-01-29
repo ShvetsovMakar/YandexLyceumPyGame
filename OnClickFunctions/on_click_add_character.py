@@ -3,19 +3,20 @@ import json
 
 from Config.constants import *
 
-def forward(game, index, name):
+
+def forward(index, name):
     return False, (index + 1) % 4
 
 
-def backward(game, index, name):
+def backward(index, name):
     return False, (index - 1) % 4
 
 
-def to_main_menu(game, index, name):
+def to_main_menu(index, name):
     return (True, )
 
 
-def create_character(game, index, name):
+def create_character(index, name):
     if not name:
         return False, index
 
@@ -30,7 +31,7 @@ def create_character(game, index, name):
         return False, index
 
     character_data = {"name": name,
-                      "hero": CHARACTER_NAMES[index],
+                      "skin": CHARACTER_NAMES[index],
                       "level": 1,
                       "XP": 0,
                       "gear": {
@@ -52,7 +53,10 @@ def create_character(game, index, name):
                                   "level": None
                               }
                           }
-                      }}
+                      },
+                      "gold": 0,
+                      "inventory": []
+                      }
 
     with open(f"Data/Characters/{name}.json", "w") as file:
         json.dump(character_data, file, indent=4)
