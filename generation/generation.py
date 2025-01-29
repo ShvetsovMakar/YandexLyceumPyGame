@@ -83,7 +83,7 @@ for i in range(64):
             sub_paths.append((ind2, ind1))
             last = 'U'
 
-
+'''
 # multiplication
 large_level = []
 for i in level:
@@ -100,4 +100,3 @@ print(*large_level, sep='\n')
 for i in level:
     print(''.join(i))
 print(len(level))
-'''
