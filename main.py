@@ -11,8 +11,6 @@ from Sprites.Label import Label
 from Sprites.TextBox import TextBox
 from Sprites.InputBox import InputBox
 
-from Sprites.Character.Character import Character
-
 
 class Game:
     def __init__(self):
