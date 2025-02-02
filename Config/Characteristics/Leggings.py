@@ -1,9 +1,9 @@
 LEGGINGS = {
-    "Berserker leggings": {
+    "Berserker Leggings": {
         "protection": 50,
         "agility": 0
     },
-    "Hermes boots": {
+    "Hermes Boots": {
         "protection": 15,
         "agility": 25
     }
