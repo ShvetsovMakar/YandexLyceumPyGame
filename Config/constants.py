@@ -7,4 +7,4 @@ CHARACTER_NAMES = ["Guts",
                    "Kratos",
                    "Griffith"]
 
-FORBIDDEN_SYMBOLS = ['\\']
+FORBIDDEN_SYMBOLS = ['\\', '/']

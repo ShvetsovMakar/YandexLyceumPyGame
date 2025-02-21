@@ -54,7 +54,7 @@ class Game:
         # Initializing labels
         labels = pygame.sprite.Group()
 
-        background = Label('Graphics/MainMenu/Background/basic.png',
+        background = Label('Graphics/MainMenu/Background/basic.jpg',
                            (0, 0),
                            (self.width, self.height),
                            labels)
@@ -132,15 +132,15 @@ class Game:
         # Initializing labels
         labels = pygame.sprite.Group()
 
-        background = Label('Graphics/AddCharacter/Background/basic.png',
+        background = Label('Graphics/AddCharacter/Background/basic.jpg',
                            (0, 0),
                            (self.width, self.height),
                            labels)
 
-        character_images_paths = ["Graphics/Characters/Guts.png",
-                                  "Graphics/Characters/Witcher.png",
-                                  "Graphics/Characters/Kratos.png",
-                                  "Graphics/Characters/Griffith.png"]
+        character_images_paths = ["Graphics/Characters/Characters/Guts.png",
+                                  "Graphics/Characters/Characters/Witcher.png",
+                                  "Graphics/Characters/Characters/Kratos.png",
+                                  "Graphics/Characters/Characters/Griffith.png"]
 
         width = self.height // 2
         height = self.height // 2
@@ -284,7 +284,7 @@ class Game:
         # Initializing labels
         labels = pygame.sprite.Group()
 
-        background = Label('Graphics/ChooseCharacter/Background/basic.png',
+        background = Label('Graphics/ChooseCharacter/Background/basic.jpg',
                            (0, 0),
                            (self.width, self.height),
                            labels)
