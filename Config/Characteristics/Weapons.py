@@ -10,6 +10,10 @@ WEAPONS = {
     "Falcon Saber": {
         "damage": 40,
         "hits": 3
+    },
+    "Wooden Sword": {
+        "damage": 60,
+        "hits": 1
     }
 }
 
