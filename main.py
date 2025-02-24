@@ -11,6 +11,8 @@ from Sprites.Label import Label
 from Sprites.TextBox import TextBox
 from Sprites.InputBox import InputBox
 
+from Sprites.Player.Player import Player
+
 
 class Game:
     def __init__(self):
@@ -289,18 +291,36 @@ class Game:
                            (self.width, self.height),
                            labels)
 
-        '''
+        # Initializing characters
+        characters_group = pygame.sprite.Group()
+        
+        characters_names = []
 
-        # Initializing character group
-        characters_filenames = []
-        character_group = pygame.sprite.Group()
-
-        characters = []
         for filename in os.listdir("Data/Characters"):
             if os.path.splitext(filename)[-1] == ".json":
+                characters_names.append(os.path.splitext(filename)[-2])
 
-                characters_filenames.append(filename)
-        '''
+        character_index = 0
+        characters = []
+
+        for character_name in characters_names:
+            characters.append(Player(character_name,
+                                     characters_group,
+                                     (self.width // 4, self.width // 4),
+                                     (self.width // 2 - self.width // 8,
+                                      self.height // 3 * 2 - height_ // 2 - self.width // 4)))
+
+        # Initializing text boxes
+        text_boxes = pygame.sprite.Group()
+
+        character_name = TextBox(characters_names[character_index],
+                                 pygame.font.Font("Fonts/Norse/bold.otf", self.width // 40),
+                                 (self.width // 2,
+                                  self.height // 3 * 2 - height_ // 2 - self.width // 4 - self.width // 40),
+                                 text_boxes,
+                                 (0, 0, 0),
+                                 (255, 255, 255),
+                                 (0, 0, 0))
 
         # Choose character loop
         while True:
@@ -315,10 +335,16 @@ class Game:
                             if not button.rect.collidepoint(pygame.mouse.get_pos()):
                                 continue
 
-                            if button.on_click()[0]:
+                            if (button.on_click(character_index)[0] and 
+                                    button.on_click(character_index)[1] is None):  # To main menu
                                 return
                             else:
-                                pass
+                                if button.on_click(character_index)[0]:  # Scroll Character
+                                    character_index = button.on_click(character_index)[1]
+                                    character_name.change_text(characters_names[character_index])
+                                else:  # Play
+                                    pass
+
                             break
 
             # Updating buttons' images
@@ -333,6 +359,11 @@ class Game:
 
             labels.draw(self.screen)
             buttons.draw(self.screen)
+
+            for text_box in text_boxes:
+                text_box.draw(self.screen)
+
+            characters[character_index].draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)
