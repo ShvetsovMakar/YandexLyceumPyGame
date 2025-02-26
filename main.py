@@ -55,6 +55,13 @@ class Map:
                                                (self.tile_width, self.tile_height),
                                                False))
 
+                if field[y][x] == "T":
+                    self.board[-1].append(Tile("Graphics/Tiles/Tree.png",
+                                               self.tiles_group,
+                                               (x * self.tile_width, y * self.tile_height),
+                                               (self.tile_width, self.tile_height),
+                                               False))
+
     def generate_forest(self):
         field = []
 
