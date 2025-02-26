@@ -11,7 +11,59 @@ from Sprites.Label import Label
 from Sprites.TextBox import TextBox
 from Sprites.InputBox import InputBox
 
+from Sprites.Tile import Tile
+
 from Sprites.Player.Player import Player
+
+
+class Map:
+    def __init__(self, screen_size, screen, field="Config/Maps/lobby.txt"):
+        self.screen = screen
+
+        # Setting up tiles width and height
+        self.width = screen_size[0]
+        self.height = screen_size[1]
+
+        self.tile_width = self.tile_height = self.height // 10
+
+        # Setting up tiles
+
+        if field == "forest":
+            field = self.generate_forest()
+
+        else:
+            with open(field, 'r') as fieldFile:
+                field = [line.strip() for line in fieldFile]
+
+        self.tiles_group = pygame.sprite.Group()
+        self.board = []
+
+        for y in range(len(field)):
+            for x in range(len(field[y])):
+                self.board.append([])
+                if field[y][x] == "G":
+                    self.board[-1].append(Tile("Graphics/Tiles/Grass.png",
+                                               self.tiles_group,
+                                               (x * self.tile_width, y * self.tile_height),
+                                               (self.tile_width, self.tile_height),
+                                               True))
+
+                if field[y][x] == "S":
+                    self.board[-1].append(Tile("Graphics/Tiles/Stone.png",
+                                               self.tiles_group,
+                                               (x * self.tile_width, y * self.tile_height),
+                                               (self.tile_width, self.tile_height),
+                                               False))
+
+    def generate_forest(self):
+        field = []
+
+        return field
+
+    def render(self):
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
+                self.board[y][x].draw(self.screen)
 
 
 class Game:
@@ -343,7 +395,7 @@ class Game:
                                     character_index = button.on_click(character_index)[1]
                                     character_name.change_text(characters_names[character_index])
                                 else:  # Play
-                                    pass
+                                    self.lobby()
 
                             break
 
@@ -364,6 +416,24 @@ class Game:
                 text_box.draw(self.screen)
 
             characters[character_index].draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
+
+    def lobby(self):
+        lobby_map = Map((self.width, self.height), self.screen)
+
+        # Lobby loop
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            # Updating screen
+            self.screen.fill((0, 0, 0))
+
+            lobby_map.render()
 
             pygame.display.flip()
             self.clock.tick(FPS)
