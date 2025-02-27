@@ -492,7 +492,11 @@ class Game:
 
             for tile in lobby_map.tiles_group:
                 camera.apply(tile)
+
             camera.apply(player)
+            for gear_element in player.gear_sprites:
+                gear_element.rect.x = player.rect.x
+                gear_element.rect.y = player.rect.y
 
             # Updating screen
             self.screen.fill((0, 0, 0))
