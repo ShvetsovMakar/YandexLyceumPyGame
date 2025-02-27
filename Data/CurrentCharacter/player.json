@@ -1,0 +1,28 @@
+{
+    "name": "character",
+    "skin": "Guts",
+    "level": 1,
+    "XP": 0,
+    "gear": {
+        "weapon": {
+            "type": "Dragon Slayer",
+            "level": 1
+        },
+        "armor": {
+            "helmet": {
+                "type": null,
+                "level": null
+            },
+            "breastplate": {
+                "type": null,
+                "level": null
+            },
+            "leggings": {
+                "type": null,
+                "level": null
+            }
+        }
+    },
+    "gold": 0,
+    "inventory": []
+}
