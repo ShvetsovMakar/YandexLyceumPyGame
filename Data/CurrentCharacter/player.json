@@ -1,12 +1,12 @@
 {
-    "name": "character",
-    "skin": "Guts",
+    "name": "as",
+    "skin": "Griffith",
     "level": 1,
     "XP": 0,
     "gear": {
         "weapon": {
-            "type": "Dragon Slayer",
-            "level": 1
+            "type": null,
+            "level": null
         },
         "armor": {
             "helmet": {

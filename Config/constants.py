@@ -8,3 +8,5 @@ CHARACTER_NAMES = ["Guts",
                    "Griffith"]
 
 FORBIDDEN_SYMBOLS = ['\\', '/']
+
+GAME_TITLE = "Legendary Heroes"

@@ -93,6 +93,10 @@ class Map:
 
 class Game:
     def __init__(self):
+        pygame.display.set_caption(GAME_TITLE)
+        icon = pygame.image.load("Graphics/Icon/Icon.jpg")
+        pygame.display.set_icon(icon)
+
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
 
