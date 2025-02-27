@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import json
 
 from Config.constants import *
 
@@ -14,6 +15,23 @@ from Sprites.InputBox import InputBox
 from Sprites.Tile import Tile
 
 from Sprites.Player.Player import Player
+
+
+class Camera:
+    def __init__(self, screen_size):
+        self.screen_width = screen_size[0]
+        self.screen_height = screen_size[1]
+
+        self.dx = 0
+        self.dy = 0
+
+    def apply(self, obj):
+        obj.rect.x += self.dx
+        obj.rect.y += self.dy
+
+    def update(self, target):
+        self.dx = -(target.rect.x + target.rect.w // 2 - self.screen_width // 2)
+        self.dy = -(target.rect.y + target.rect.h // 2 - self.screen_height // 2)
 
 
 class Map:
@@ -402,6 +420,14 @@ class Game:
                                     character_index = button.on_click(character_index)[1]
                                     character_name.change_text(characters_names[character_index])
                                 else:  # Play
+                                    # Saving current character data
+                                    with open(f"Data/Characters/{character_name.text}.json", "r") as file:
+                                        data = json.load(file)
+
+                                    with open(f"Data/CurrentCharacter/player.json", "w") as file:
+                                        json.dump(data, file, indent=4)
+
+                                    # Opening lobby map
                                     self.lobby()
 
                             break
@@ -428,7 +454,22 @@ class Game:
             self.clock.tick(FPS)
 
     def lobby(self):
+        # Loading lobby map
         lobby_map = Map((self.width, self.height), self.screen)
+
+        # Loading character data
+        with open(f"Data/CurrentCharacter/player.json", "r") as file:
+            data = json.load(file)
+            character_name = data["name"]
+
+        player_group = pygame.sprite.Group()
+        player = Player(character_name,
+                        player_group,
+                        (self.height // 10, self.height // 10),
+                        (0, 0))
+
+        # Setting up camera
+        camera = Camera((self.width, self.height))
 
         # Lobby loop
         while True:
@@ -436,11 +477,28 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.scancode == 80:
+                        player.rect.x -= self.height // 10
+                    elif event.scancode == 79:
+                        player.rect.x += self.height // 10
+                    elif event.scancode == 82:
+                        player.rect.y -= self.height // 10
+                    elif event.scancode == 81:
+                        player.rect.y += self.height // 10
+
+            # Updating camera and moving sprites accordingly
+            camera.update(player)
+
+            for tile in lobby_map.tiles_group:
+                camera.apply(tile)
+            camera.apply(player)
 
             # Updating screen
             self.screen.fill((0, 0, 0))
 
             lobby_map.render()
+            player.draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)

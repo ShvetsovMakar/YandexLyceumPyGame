@@ -5,8 +5,8 @@
     "XP": 0,
     "gear": {
         "weapon": {
-            "type": null,
-            "level": null
+            "type": "Dragon Slayer",
+            "level": 1
         },
         "armor": {
             "helmet": {
