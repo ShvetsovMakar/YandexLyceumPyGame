@@ -1,5 +1,5 @@
 BREASTPLATES = {
-    "Berserker Breastplate": {
+    "Mythic Breastplate": {
         "protection": 100,
         "agility": 0
     },
