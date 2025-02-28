@@ -5,7 +5,8 @@ import json
 
 from Config.constants import *
 
-from OnClickFunctions import on_click_main_menu, on_click_add_character, on_click_choose_character
+from OnClickFunctions import (on_click_main_menu, on_click_add_character, on_click_choose_character,
+                              on_click_to_main_menu)
 
 from Sprites.Button import Button
 from Sprites.Label import Label
@@ -15,6 +16,8 @@ from Sprites.InputBox import InputBox
 from Sprites.Tile import Tile
 
 from Sprites.Player.Player import Player
+
+sys.setrecursionlimit(10 ** 6)
 
 
 class Camera:
@@ -482,6 +485,8 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    if event.scancode == 41:
+                        self.to_main_menu()
                     if event.scancode == 80:
                         player.rect.x -= self.height // 10
                     elif event.scancode == 79:
@@ -503,10 +508,74 @@ class Game:
                 gear_element.rect.y = player.rect.y
 
             # Updating screen
-            self.screen.fill((0, 0, 0))
+            self.screen.fill((5, 50, 5))
 
             lobby_map.render()
             player.draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
+
+    def to_main_menu(self):
+        # Initializing buttons
+        buttons = pygame.sprite.Group()
+
+        width = self.width // 4
+        height = self.height // 4
+
+        to_main_menu_button = Button('Graphics/ToMainMenu/ToMainMenuButton/basic.png',
+                                     'Graphics/ToMainMenu/ToMainMenuButton/hovered_on.png',
+                                     (self.width // 8, self.height // 2 - height),
+                                     (width, height),
+                                     buttons,
+                                     on_click_to_main_menu.to_main_menu)
+
+        back_button = Button('Graphics/ToMainMenu/BackButton/basic.png',
+                             'Graphics/ToMainMenu/BackButton/hovered_on.png',
+                             (self.width // 8 * 5, self.height // 2 - height),
+                             (width, height),
+                             buttons,
+                             on_click_to_main_menu.back)
+
+        # Initializing labels
+        labels = pygame.sprite.Group()
+
+        background = Label('Graphics/ToMainMenu/Background/basic.png',
+                           (0, 0),
+                           (self.width, self.height),
+                           labels)
+        # To main menu loop
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in buttons:
+                        if button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if not button.rect.collidepoint(pygame.mouse.get_pos()):
+                                continue
+
+                            if button.on_click():  # To main menu
+                                self.main_menu()
+                            else:  # Back
+                                return
+
+                            break
+
+            # Updating buttons' images
+            for button in buttons:
+                if button.rect.collidepoint(pygame.mouse.get_pos()):
+                    button.set_hovered_on_image()
+                else:
+                    button.set_basic_image()
+
+            # Updating screen
+            self.screen.fill((0, 0, 0))
+
+            labels.draw(self.screen)
+            buttons.draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)
