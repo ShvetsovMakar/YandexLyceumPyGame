@@ -520,18 +520,22 @@ class Game:
                         # Moving player to clicked tile by pixels
                         while dx != 0 or dy != 0:
                             if dx > 0:
-                                player.rect.x += 1
-                                dx -= 1
+                                move = min(dx, player.width // 5)
+                                player.rect.x += move
+                                dx -= move
                             elif dx < 0:
-                                player.rect.x -= 1
-                                dx += 1
+                                move = min(dx * -1, player.width // 5)
+                                player.rect.x -= move
+                                dx += move
 
                             if dy > 0:
-                                player.rect.y += 1
-                                dy -= 1
+                                move = min(dy, player.height // 5)
+                                player.rect.y += move
+                                dy -= move
                             elif dy < 0:
-                                player.rect.y -= 1
-                                dy += 1
+                                move = min(dy * -1, player.height // 5)
+                                player.rect.y -= move
+                                dy += move
 
                             # Updating camera and moving sprites accordingly
                             camera.update(player)
@@ -551,7 +555,7 @@ class Game:
                             player.draw(self.screen)
 
                             pygame.display.flip()
-                            self.clock.tick(FPS * player.width)
+                            self.clock.tick(FPS)
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
