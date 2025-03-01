@@ -93,6 +93,28 @@ class Map:
             for x in range(len(self.board[y])):
                 self.board[y][x].draw(self.screen)
 
+    def get_tile(self, mouse_pos):
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
+                if self.board[y][x].rect.collidepoint(mouse_pos):
+                    return self.board[y][x]
+        return None
+
+    def on_click(self, mouse_pos, player):
+        tile = self.get_tile(mouse_pos)
+
+        if tile is None:
+            return [None, None]
+
+        player_pos = [player.rect.x // self.tile_width, player.rect.y // self.tile_height]
+        tile_pos = [tile.rect.x // self.tile_width, tile.rect.y // self.tile_height]
+
+        # Checking if player is able to move to this tile
+        if -1 <= player_pos[0] - tile_pos[0] <= 1 and -1 <= player_pos[1] - tile_pos[1] <= 1 and tile.walkable:
+            return ["move", [tile.rect.x - player.rect.x, tile.rect.y - player.rect.y]]
+
+        return [None, None]
+
 
 class Game:
     def __init__(self):
@@ -484,17 +506,52 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
                 if event.type == pygame.KEYDOWN:
                     if event.scancode == 41:
                         self.to_main_menu()
-                    if event.scancode == 80:
-                        player.rect.x -= self.height // 10
-                    elif event.scancode == 79:
-                        player.rect.x += self.height // 10
-                    elif event.scancode == 82:
-                        player.rect.y -= self.height // 10
-                    elif event.scancode == 81:
-                        player.rect.y += self.height // 10
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    on_click = lobby_map.on_click(pygame.mouse.get_pos(), player)
+
+                    if on_click[0] == "move":
+                        dx, dy = on_click[1]
+
+                        # Moving player to clicked tile by pixels
+                        while dx != 0 or dy != 0:
+                            if dx > 0:
+                                player.rect.x += 1
+                                dx -= 1
+                            elif dx < 0:
+                                player.rect.x -= 1
+                                dx += 1
+
+                            if dy > 0:
+                                player.rect.y += 1
+                                dy -= 1
+                            elif dy < 0:
+                                player.rect.y -= 1
+                                dy += 1
+
+                            # Updating camera and moving sprites accordingly
+                            camera.update(player)
+
+                            for tile in lobby_map.tiles_group:
+                                camera.apply(tile)
+
+                            camera.apply(player)
+                            for gear_element in player.gear_sprites:
+                                gear_element.rect.x = player.rect.x
+                                gear_element.rect.y = player.rect.y
+
+                            # Updating screen
+                            self.screen.fill((5, 50, 5))
+
+                            lobby_map.render()
+                            player.draw(self.screen)
+
+                            pygame.display.flip()
+                            self.clock.tick(FPS * player.width)
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
