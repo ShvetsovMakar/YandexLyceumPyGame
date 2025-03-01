@@ -10,16 +10,16 @@
         },
         "armor": {
             "helmet": {
-                "type": null,
-                "level": null
+                "type": "Falcon Helmet",
+                "level": 1
             },
             "breastplate": {
                 "type": "Chain Armor",
                 "level": 1
             },
             "leggings": {
-                "type": null,
-                "level": null
+                "type": "Hermes Boots",
+                "level": 1
             }
         }
     },

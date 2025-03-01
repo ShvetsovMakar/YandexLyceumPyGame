@@ -8,4 +8,4 @@ class Merchant(Mob):
         super().__init__(image_path, position, size, sprite_group)
 
     def on_click(self):
-        pass
+        return None
