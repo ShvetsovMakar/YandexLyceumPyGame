@@ -1,5 +1,5 @@
 LEGGINGS = {
-    "Berserker Leggings": {
+    "Mythic Leggings": {
         "protection": 50,
         "agility": 0
     },
