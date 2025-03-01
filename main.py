@@ -514,10 +514,10 @@ class Game:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     on_click = lobby_map.on_click(pygame.mouse.get_pos(), player)
 
+                    # Moving player to clicked tile by pixels
                     if on_click[0] == "move":
                         dx, dy = on_click[1]
 
-                        # Moving player to clicked tile by pixels
                         while dx != 0 or dy != 0:
                             if dx > 0:
                                 move = min(dx, player.width // 5)
