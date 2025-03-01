@@ -93,6 +93,3 @@ class Player(pygame.sprite.Sprite):
             screen.blit(self.head_image, self.rect)
         else:
             self.helmet.draw(screen)
-
-
-

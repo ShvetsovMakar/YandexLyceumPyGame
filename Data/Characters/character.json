@@ -14,8 +14,8 @@
                 "level": null
             },
             "breastplate": {
-                "type": null,
-                "level": null
+                "type": "Chain Armor",
+                "level": 1
             },
             "leggings": {
                 "type": null,

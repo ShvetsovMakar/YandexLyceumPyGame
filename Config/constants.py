@@ -10,3 +10,6 @@ CHARACTER_NAMES = ["Guts",
 FORBIDDEN_SYMBOLS = ['\\', '/']
 
 GAME_TITLE = "Legendary Heroes"
+
+MERCHANT_POSITION = (2, 19)
+VILLAGER_POSITION = (13, 22)

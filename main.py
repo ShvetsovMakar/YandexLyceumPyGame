@@ -17,6 +17,10 @@ from Sprites.Tile import Tile
 
 from Sprites.Player.Player import Player
 
+from Sprites.Mobs.Enemy import Enemy
+from Sprites.Mobs.Merchant import Merchant
+from Sprites.Mobs.Villager import Villager
+
 sys.setrecursionlimit(10 ** 6)
 
 
@@ -100,7 +104,7 @@ class Map:
                     return self.board[y][x]
         return None
 
-    def on_click(self, mouse_pos, player, camera, clock):
+    def on_click(self, mouse_pos, player, mobs_group, camera, clock):
         tile = self.get_tile(mouse_pos)
 
         if tile is None:
@@ -140,6 +144,9 @@ class Map:
                 for tile in self.tiles_group:
                     camera.apply(tile)
 
+                for mob in mobs_group:
+                    camera.apply(mob)
+
                 camera.apply(player)
                 for gear_element in player.gear_sprites:
                     gear_element.rect.x = player.rect.x
@@ -149,6 +156,7 @@ class Map:
                 self.screen.fill((5, 50, 5))
 
                 self.render()
+                mobs_group.draw(self.screen)
                 player.draw(self.screen)
 
                 pygame.display.flip()
@@ -539,6 +547,21 @@ class Game:
         # Setting up camera
         camera = Camera((self.width, self.height))
 
+        # Creating mobs
+        mobs_group = pygame.sprite.Group()
+
+        merchant = Merchant("Graphics/Villagers/Merchant.png",
+                            (self.height // 10 * MERCHANT_POSITION[1],
+                             self.height // 10 * MERCHANT_POSITION[0]),
+                            (self.height // 10, self.height // 10),
+                            mobs_group)
+
+        villager = Merchant("Graphics/Villagers/Villager.png",
+                            (self.height // 10 * VILLAGER_POSITION[1],
+                             self.height // 10 * VILLAGER_POSITION[0]),
+                            (self.height // 10, self.height // 10),
+                            mobs_group)
+
         # Lobby loop
         while True:
             for event in pygame.event.get():
@@ -551,13 +574,16 @@ class Game:
                         self.to_main_menu()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    lobby_map.on_click(pygame.mouse.get_pos(), player, camera, self.clock)
+                    lobby_map.on_click(pygame.mouse.get_pos(), player, mobs_group, camera, self.clock)
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
 
             for tile in lobby_map.tiles_group:
                 camera.apply(tile)
+
+            for mob in mobs_group:
+                camera.apply(mob)
 
             camera.apply(player)
             for gear_element in player.gear_sprites:
@@ -568,6 +594,7 @@ class Game:
             self.screen.fill((5, 50, 5))
 
             lobby_map.render()
+            mobs_group.draw(self.screen)
             player.draw(self.screen)
 
             pygame.display.flip()
