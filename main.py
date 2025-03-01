@@ -100,20 +100,59 @@ class Map:
                     return self.board[y][x]
         return None
 
-    def on_click(self, mouse_pos, player):
+    def on_click(self, mouse_pos, player, camera, clock):
         tile = self.get_tile(mouse_pos)
 
         if tile is None:
-            return [None, None]
+            return
 
         player_pos = [player.rect.x // self.tile_width, player.rect.y // self.tile_height]
         tile_pos = [tile.rect.x // self.tile_width, tile.rect.y // self.tile_height]
 
         # Checking if player is able to move to this tile
         if -1 <= player_pos[0] - tile_pos[0] <= 1 and -1 <= player_pos[1] - tile_pos[1] <= 1 and tile.walkable:
-            return ["move", [tile.rect.x - player.rect.x, tile.rect.y - player.rect.y]]
+            dx = tile.rect.x - player.rect.x
+            dy = tile.rect.y - player.rect.y
 
-        return [None, None]
+            # Moving player to clicked tile by pixels
+            while dx != 0 or dy != 0:
+                if dx > 0:
+                    move = min(dx, player.width // 5)
+                    player.rect.x += move
+                    dx -= move
+                elif dx < 0:
+                    move = min(dx * -1, player.width // 5)
+                    player.rect.x -= move
+                    dx += move
+
+                if dy > 0:
+                    move = min(dy, player.height // 5)
+                    player.rect.y += move
+                    dy -= move
+                elif dy < 0:
+                    move = min(dy * -1, player.height // 5)
+                    player.rect.y -= move
+                    dy += move
+
+                # Updating camera and moving sprites accordingly
+                camera.update(player)
+
+                for tile in self.tiles_group:
+                    camera.apply(tile)
+
+                camera.apply(player)
+                for gear_element in player.gear_sprites:
+                    gear_element.rect.x = player.rect.x
+                    gear_element.rect.y = player.rect.y
+
+                # Updating screen
+                self.screen.fill((5, 50, 5))
+
+                self.render()
+                player.draw(self.screen)
+
+                pygame.display.flip()
+                clock.tick(FPS)
 
 
 class Game:
@@ -512,50 +551,7 @@ class Game:
                         self.to_main_menu()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    on_click = lobby_map.on_click(pygame.mouse.get_pos(), player)
-
-                    # Moving player to clicked tile by pixels
-                    if on_click[0] == "move":
-                        dx, dy = on_click[1]
-
-                        while dx != 0 or dy != 0:
-                            if dx > 0:
-                                move = min(dx, player.width // 5)
-                                player.rect.x += move
-                                dx -= move
-                            elif dx < 0:
-                                move = min(dx * -1, player.width // 5)
-                                player.rect.x -= move
-                                dx += move
-
-                            if dy > 0:
-                                move = min(dy, player.height // 5)
-                                player.rect.y += move
-                                dy -= move
-                            elif dy < 0:
-                                move = min(dy * -1, player.height // 5)
-                                player.rect.y -= move
-                                dy += move
-
-                            # Updating camera and moving sprites accordingly
-                            camera.update(player)
-
-                            for tile in lobby_map.tiles_group:
-                                camera.apply(tile)
-
-                            camera.apply(player)
-                            for gear_element in player.gear_sprites:
-                                gear_element.rect.x = player.rect.x
-                                gear_element.rect.y = player.rect.y
-
-                            # Updating screen
-                            self.screen.fill((5, 50, 5))
-
-                            lobby_map.render()
-                            player.draw(self.screen)
-
-                            pygame.display.flip()
-                            self.clock.tick(FPS)
+                    lobby_map.on_click(pygame.mouse.get_pos(), player, camera, self.clock)
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
