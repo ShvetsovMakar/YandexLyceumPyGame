@@ -91,6 +91,8 @@ class Map:
     def generate_forest(self):
         field_width = 64
         field_height = 64
+        sub_paths_amount = 64
+
         obstacle_types = ["T"] * 8 + ["S"] * 2
 
         path_directions = ['U'] * 5 + ['D'] * 5 + ['R'] * 6
@@ -106,6 +108,7 @@ class Map:
         field = [['O'] * field_width for _ in range(field_height)]
         field[y][0] = "G"
 
+        # Generating main path
         while x < field_width - 1:
             direction = random.choice(path_directions)
 
@@ -126,7 +129,56 @@ class Map:
                 field[y][x] = 'G'
                 path.append((y, x))
                 last_direction = 'U'
+                
+        del path[-1]
+        sub_paths = []
 
+        # Generating sub paths
+        for i in range(sub_paths_amount):
+            if i > 5:
+                choice = []
+                choice.append(random.choice(path))
+
+                for i in range(10):
+                    choice.append(random.choice(sub_paths))
+
+                start = random.choice(choice)
+            else:
+                start = random.choice(path)
+
+            y, x = start
+            last_direction = ''
+
+            cur_directions = random.choice(sub_paths_directions)
+
+            for j in range(random.randint(field_width // 2, field_width)):
+                direction = random.choice(cur_directions)
+
+                if direction == 'R' and last_direction != 'L' and x <= field_width - 2:
+                    x += 1
+                    field[y][x] = 'G'
+                    sub_paths.append((y, x))
+                    last_direction = 'R'
+
+                elif direction == 'L' and last_direction != 'R' and x >= 1:
+                    x -= 1
+                    field[y][x] = 'G'
+                    sub_paths.append((y, x))
+                    last_direction = 'L'
+
+                elif direction == 'D' and last_direction != 'U' and y <= field_height - 2:
+                    y += 1
+                    field[y][x] = 'G'
+                    sub_paths.append((y, x))
+                    last_direction = 'D'
+
+                elif direction == 'U' and last_direction != 'D' and y >= 1:
+                    y -= 1
+                    field[y][x] = 'G'
+                    sub_paths.append((y, x))
+                    last_direction = 'U'
+            
+        # Differentiating obstacles
         for y in range(field_height):
             for x in range(field_width):
                 if field[y][x] == "O":
