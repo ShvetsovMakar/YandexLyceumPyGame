@@ -15,3 +15,17 @@ MERCHANT_POSITION = (2, 19)
 VILLAGER_POSITION = (13, 22)
 
 GREEN_BACKGROUND = (5, 50, 5)
+
+ENEMIES_AMOUNT = 64
+
+ENEMIES = ["Bandit", "Viking"]
+
+ENEMIES_DAMAGE = {
+    "Bandit": 40,
+    "Viking": 50
+}
+
+ENEMIES_HEALTH = {
+    "Bandit": 250,
+    "Viking": 300
+}

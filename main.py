@@ -729,6 +729,7 @@ class Game:
 
         # Creating mobs
         mobs_group = pygame.sprite.Group()
+        enemies = []
 
         # Determining forester's position on the battle map
         walkable_tiles = []
@@ -740,6 +741,26 @@ class Game:
                             random.choice(walkable_tiles),
                             (self.height // 10, self.height // 10),
                             mobs_group)
+
+        # Determining enemies positions
+        walkable_tiles = []
+        for y in range(len(battle_map.board)):
+            for x in range(len(battle_map.board[y])):
+                if battle_map.board[y][x].walkable:
+                    walkable_tiles.append((x * self.height // 10, y * self.height // 10))
+
+        for i in range(min(len(walkable_tiles) // 2, ENEMIES_AMOUNT)):
+            position = random.choice(walkable_tiles)
+            walkable_tiles.remove(position)
+
+            enemy_type = random.choice(ENEMIES)
+
+            enemies.append(Enemy(f"Graphics/Enemies/{enemy_type}.png",
+                                 position,
+                                 (self.height // 10, self.height // 10),
+                                 mobs_group,
+                                 ENEMIES_DAMAGE[enemy_type],
+                                 ENEMIES_HEALTH[enemy_type]))
 
         # Battle loop
         while True:
@@ -786,6 +807,7 @@ class Game:
         with open(f"Data/CurrentCharacter/player.json", "r") as file:
             data = json.load(file)
             gold = player.gold - data["gold"]
+        player.save()
 
         # Initializing buttons
         buttons = pygame.sprite.Group()
