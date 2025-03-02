@@ -7,7 +7,7 @@ import random
 from Config.constants import *
 
 from OnClickFunctions import (on_click_main_menu, on_click_add_character, on_click_choose_character,
-                              on_click_to_main_menu)
+                              on_click_to_main_menu, on_click_battle_ending)
 
 from Sprites.Button import Button
 from Sprites.Label import Label
@@ -754,6 +754,8 @@ class Game:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     on_click = battle_map.on_click(pygame.mouse.get_pos(), player, mobs_group, camera, self.clock)
+                    if on_click == "exit":
+                        self.battle_ending(player)
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
@@ -775,6 +777,89 @@ class Game:
             battle_map.render()
             mobs_group.draw(self.screen)
             player.draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
+
+    def battle_ending(self, player):
+        # Determining the amount of collected gold
+        with open(f"Data/CurrentCharacter/player.json", "r") as file:
+            data = json.load(file)
+            gold = player.gold - data["gold"]
+
+        # Initializing buttons
+        buttons = pygame.sprite.Group()
+
+        width = self.width // 4
+        height = self.height // 4
+
+        to_main_menu_button = Button('Graphics/BattleEnding/ToMainMenuButton/basic.png',
+                                     'Graphics/BattleEnding/ToMainMenuButton/hovered_on.png',
+                                     (self.width // 8, self.height // 2 - height),
+                                     (width, height),
+                                     buttons,
+                                     on_click_battle_ending.to_main_menu)
+
+        to_lobby_button = Button('Graphics/BattleEnding/ToLobbyButton/basic.png',
+                                 'Graphics/BattleEnding/ToLobbyButton/hovered_on.png',
+                                 (self.width // 8 * 5, self.height // 2 - height),
+                                 (width, height),
+                                 buttons,
+                                 on_click_battle_ending.to_lobby)
+
+        # Initializing labels
+        labels = pygame.sprite.Group()
+
+        background = Label('Graphics/BattleEnding/Background/basic.png',
+                           (0, 0),
+                           (self.width, self.height),
+                           labels)
+
+        # Initializing text boxes
+        text_boxes = pygame.sprite.Group()
+
+        collected_gold = TextBox(f"{gold} gold collected!",
+                                 pygame.font.Font("Fonts/Norse/bold.otf", self.width // 40),
+                                 (self.width // 2, self.height // 2 - self.height // 4 - self.width // 40),
+                                 text_boxes,
+                                 (0, 0, 0),
+                                 (255, 255, 255),
+                                 (0, 0, 0))
+
+        # Battle ending loop
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in buttons:
+                        if button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if not button.rect.collidepoint(pygame.mouse.get_pos()):
+                                continue
+
+                            if button.on_click():  # To lobby
+                                self.lobby()
+                            else:  # To main menu
+                                self.main_menu()
+
+                            break
+
+            # Updating buttons' images
+            for button in buttons:
+                if button.rect.collidepoint(pygame.mouse.get_pos()):
+                    button.set_hovered_on_image()
+                else:
+                    button.set_basic_image()
+
+            # Updating screen
+            self.screen.fill((0, 0, 0))
+
+            labels.draw(self.screen)
+            buttons.draw(self.screen)
+            for text_box in text_boxes:
+                text_box.draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)
