@@ -8,4 +8,4 @@ class Warrior(Mob):
         super().__init__(image_path, position, size, sprite_group)
 
     def on_click(self, player):
-        return "battle"
+        return "forest"

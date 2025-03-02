@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import json
+import random
 
 from Config.constants import *
 
@@ -64,8 +65,8 @@ class Map:
         self.board = []
 
         for y in range(len(field)):
+            self.board.append([])
             for x in range(len(field[y])):
-                self.board.append([])
                 if field[y][x] == "G":
                     self.board[-1].append(Tile("Graphics/Tiles/Grass.png",
                                                self.tiles_group,
@@ -88,9 +89,50 @@ class Map:
                                                False))
 
     def generate_forest(self):
-        field = []
+        field_width = 64
+        field_height = 64
+        obstacle_types = ["T"] * 8 + ["S"] * 2
 
-        return field
+        path_directions = ['U'] * 5 + ['D'] * 5 + ['R'] * 6
+        sub_paths_directions = [['U'] * 20 + ['D'] * 4 + ['R'] * 6 + ['L'] * 4,
+                                ['U'] * 20 + ['D'] * 4 + ['R'] * 4 + ['L'] * 6,
+                                ['U'] * 4 + ['D'] * 20 + ['R'] * 6 + ['L'] * 4,
+                                ['U'] * 4 + ['D'] * 20 + ['R'] * 4 + ['L'] * 6]
+        last_direction = ''
+        path = []
+        x = 0
+        y = random.randint(0, field_height - 1)
+
+        field = [['O'] * field_width for _ in range(field_height)]
+        field[y][0] = "G"
+
+        while x < field_width - 1:
+            direction = random.choice(path_directions)
+
+            if direction == 'R':
+                x += 1
+                field[y][x] = 'G'
+                path.append((y, x))
+                last_direction = ''
+
+            elif direction == 'D' and y < field_height - 1 and last_direction != 'U':
+                y += 1
+                field[y][x] = 'G'
+                path.append((y, x))
+                last_direction = 'D'
+
+            elif direction == 'U' and y > 0 and last_direction != 'D':
+                y -= 1
+                field[y][x] = 'G'
+                path.append((y, x))
+                last_direction = 'U'
+
+        for y in range(field_height):
+            for x in range(field_width):
+                if field[y][x] == "O":
+                    field[y][x] = random.choice(obstacle_types)
+
+        return [''.join(line) for line in field]
 
     def render(self):
         for y in range(len(self.board)):
@@ -579,10 +621,10 @@ class Game:
                     if event.scancode == 41:
                         self.to_main_menu()
 
-                elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     on_click = lobby_map.on_click(pygame.mouse.get_pos(), player, mobs_group, camera, self.clock)
-                    if on_click == "battle":
-                        self.battle()
+                    if on_click == "forest":
+                        self.battle(on_click)
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
@@ -608,8 +650,70 @@ class Game:
             pygame.display.flip()
             self.clock.tick(FPS)
 
-    def battle(self):
-        pass
+    def battle(self, field):
+        # Loading battle map
+        battle_map = Map((self.width, self.height), self.screen, field=field)
+
+        # Loading character data
+        with open(f"Data/CurrentCharacter/player.json", "r") as file:
+            data = json.load(file)
+            character_name = data["name"]
+
+        # Determining player's position on the battle map
+        walkable_tiles = []
+        for y in range(len(battle_map.board)):
+            if battle_map.board[y][0].walkable:
+                walkable_tiles.append((0, y * self.height // 10))
+
+        player_group = pygame.sprite.Group()
+        player = Player(character_name,
+                        player_group,
+                        (self.height // 10, self.height // 10),
+                        random.choice(walkable_tiles))
+
+        # Setting up camera
+        camera = Camera((self.width, self.height))
+
+        # Creating mobs
+        mobs_group = pygame.sprite.Group()
+
+        # Battle loop
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.scancode == 41:
+                        self.to_main_menu()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    on_click = battle_map.on_click(pygame.mouse.get_pos(), player, mobs_group, camera, self.clock)
+
+            # Updating camera and moving sprites accordingly
+            camera.update(player)
+
+            for tile in battle_map.tiles_group:
+                camera.apply(tile)
+
+            for mob in mobs_group:
+                camera.apply(mob)
+
+            camera.apply(player)
+            for gear_element in player.gear_sprites:
+                gear_element.rect.x = player.rect.x
+                gear_element.rect.y = player.rect.y
+
+            # Updating screen
+            self.screen.fill(GREEN_BACKGROUND)
+
+            battle_map.render()
+            mobs_group.draw(self.screen)
+            player.draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
 
     def to_main_menu(self):
         # Initializing buttons
