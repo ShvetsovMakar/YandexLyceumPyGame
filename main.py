@@ -21,6 +21,7 @@ from Sprites.Player.Player import Player
 from Sprites.Mobs.Enemy import Enemy
 from Sprites.Mobs.Merchant import Merchant
 from Sprites.Mobs.Warrior import Warrior
+from Sprites.Mobs.Forester import Forester
 
 sys.setrecursionlimit(10 ** 6)
 
@@ -728,6 +729,17 @@ class Game:
 
         # Creating mobs
         mobs_group = pygame.sprite.Group()
+
+        # Determining forester's position on the battle map
+        walkable_tiles = []
+        for y in range(len(battle_map.board)):
+            if battle_map.board[y][len(battle_map.board[y]) - 1].walkable:
+                walkable_tiles.append(((len(battle_map.board[y]) - 1) * self.height // 10, y * self.height // 10))
+
+        forester = Forester("Graphics/Villagers/Forester.png",
+                            random.choice(walkable_tiles),
+                            (self.height // 10, self.height // 10),
+                            mobs_group)
 
         # Battle loop
         while True:
