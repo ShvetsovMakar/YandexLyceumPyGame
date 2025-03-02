@@ -21,8 +21,8 @@ ENEMIES_AMOUNT = 64
 ENEMIES = ["Bandit", "Viking"]
 
 ENEMIES_DAMAGE = {
-    "Bandit": 40,
-    "Viking": 50
+    "Bandit": 50,
+    "Viking": 60
 }
 
 ENEMIES_HEALTH = {

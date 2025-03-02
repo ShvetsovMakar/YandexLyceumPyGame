@@ -1,11 +1,11 @@
 LEGGINGS = {
     "Mythic Leggings": {
-        "protection": 50,
-        "agility": 0
+        "protection": 0.17,
+        "agility": 0.03
     },
     "Hermes Boots": {
-        "protection": 15,
-        "agility": 25
+        "protection": 0.1,
+        "agility": 0.1
     }
 }
 

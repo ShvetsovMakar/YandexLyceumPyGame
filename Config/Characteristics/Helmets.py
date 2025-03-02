@@ -1,7 +1,7 @@
 HELMETS = {
     "Falcon Helmet": {
-        "protection": 20,
-        "agility": 10
+        "protection": 0.15,
+        "agility": 0.07
     }
 }
 

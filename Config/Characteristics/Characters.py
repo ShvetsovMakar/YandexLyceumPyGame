@@ -1,23 +1,23 @@
 CHARACTERS = {
     "Guts": {
-        "health": 5000,
+        "health": 1200,
         "damage": 50,
-        "agility": 15
+        "agility": 0.15
     },
     "Griffith": {
-        "health": 4000,
-        "damage": 30,
-        "agility": 45
+        "health": 850,
+        "damage": 35,
+        "agility": 0.35
     },
     "Witcher": {
-        "health": 4500,
-        "damage": 40,
-        "agility": 25
+        "health": 1000,
+        "damage": 43,
+        "agility": 0.25
     },
     "Kratos": {
-        "health": 6000,
+        "health": 1400,
         "damage": 60,
-        "agility": 5
+        "agility": 0.1
     }
 }
 

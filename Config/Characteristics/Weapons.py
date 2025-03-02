@@ -4,8 +4,8 @@ WEAPONS = {
         "hits": 1
     },
     "Wooden Sword": {
-        "damage": 60,
-        "hits": 1
+        "damage": 40,
+        "hits": 2
     }
 }
 

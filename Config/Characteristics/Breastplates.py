@@ -1,11 +1,11 @@
 BREASTPLATES = {
     "Mythic Breastplate": {
-        "protection": 100,
-        "agility": 0
+        "protection": 0.4,
+        "agility": 0.1
     },
     "Chain Armor": {
-        "protection": 60,
-        "agility": 25
+        "protection": 0.3,
+        "agility": 0.2
     }
 }
 
