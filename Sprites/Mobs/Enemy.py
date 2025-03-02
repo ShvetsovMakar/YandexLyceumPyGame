@@ -14,7 +14,7 @@ class Enemy(Mob):
     def on_click(self, player):
         damage = player.damage
         if player.weapon is not None:
-            damage += player.weapon.damage
+            damage += player.weapon.damage * player.weapon.hits
 
         self.health -= damage
         if self.health <= 0:
