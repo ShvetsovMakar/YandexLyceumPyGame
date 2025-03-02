@@ -1,6 +1,7 @@
 import pygame
 import json
 
+from Config.Characteristics.Characters import CHARACTERS, CHARACTER_ENHANCEMENT
 from Sprites.Player.Weapon import Weapon
 from Sprites.Player.Breastplate import Breastplate
 from Sprites.Player.Leggings import Leggings
@@ -22,6 +23,10 @@ class Player(pygame.sprite.Sprite):
             self.XP = data["XP"]
             self.gold = data["gold"]
             self.skin = data["skin"]
+
+            self.damage = CHARACTERS[self.skin]["damage"] * CHARACTER_ENHANCEMENT ** self.level
+            self.health = CHARACTERS[self.skin]["health"] * CHARACTER_ENHANCEMENT ** self.level
+            self.agility = CHARACTERS[self.skin]["agility"]
 
             # Setting up player's body parts images
 

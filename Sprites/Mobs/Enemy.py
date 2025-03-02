@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from Sprites.Mobs.Mob import Mob
 
@@ -11,4 +12,11 @@ class Enemy(Mob):
         self.health = health
 
     def on_click(self, player):
-        pass
+        damage = player.damage
+        if player.weapon is not None:
+            damage += player.weapon.damage
+
+        self.health -= damage
+        if self.health <= 0:
+            self.kill()
+            player.gold += random.randint(2, 5)
