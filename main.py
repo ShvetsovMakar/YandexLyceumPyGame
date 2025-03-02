@@ -110,62 +110,63 @@ class Map:
         if tile is None:
             return
 
+        # Checking if player has clicked on mob
+        for mob in mobs_group:
+            if mob.rect.x == tile.rect.x and mob.rect.y == tile.rect.y:
+                return mob.on_click(player)
+
+        # Defining player and tile position on the map
         player_pos = [player.rect.x // self.tile_width, player.rect.y // self.tile_height]
         tile_pos = [tile.rect.x // self.tile_width, tile.rect.y // self.tile_height]
 
-        for mob in mobs_group:
-            if mob.rect.x == tile.rect.x and mob.rect.y == tile.rect.y:
-                print(mob.on_click())
-                break
-        else:
-            # Checking if player is able to move to this tile
-            if -1 <= player_pos[0] - tile_pos[0] <= 1 and -1 <= player_pos[1] - tile_pos[1] <= 1 and tile.walkable:
-                dx = tile.rect.x - player.rect.x
-                dy = tile.rect.y - player.rect.y
+        # Checking if player is able to move to this tile
+        if -1 <= player_pos[0] - tile_pos[0] <= 1 and -1 <= player_pos[1] - tile_pos[1] <= 1 and tile.walkable:
+            dx = tile.rect.x - player.rect.x
+            dy = tile.rect.y - player.rect.y
 
-                # Moving player to clicked tile by pixels
-                while dx != 0 or dy != 0:
-                    if dx > 0:
-                        move = min(dx, player.width // 5)
-                        player.rect.x += move
-                        dx -= move
-                    elif dx < 0:
-                        move = min(dx * -1, player.width // 5)
-                        player.rect.x -= move
-                        dx += move
+            # Moving player to clicked tile by pixels
+            while dx != 0 or dy != 0:
+                if dx > 0:
+                    move = min(dx, player.width // 5)
+                    player.rect.x += move
+                    dx -= move
+                elif dx < 0:
+                    move = min(dx * -1, player.width // 5)
+                    player.rect.x -= move
+                    dx += move
 
-                    if dy > 0:
-                        move = min(dy, player.height // 5)
-                        player.rect.y += move
-                        dy -= move
-                    elif dy < 0:
-                        move = min(dy * -1, player.height // 5)
-                        player.rect.y -= move
-                        dy += move
+                if dy > 0:
+                    move = min(dy, player.height // 5)
+                    player.rect.y += move
+                    dy -= move
+                elif dy < 0:
+                    move = min(dy * -1, player.height // 5)
+                    player.rect.y -= move
+                    dy += move
 
-                    # Updating camera and moving sprites accordingly
-                    camera.update(player)
+                # Updating camera and moving sprites accordingly
+                camera.update(player)
 
-                    for tile in self.tiles_group:
-                        camera.apply(tile)
+                for tile in self.tiles_group:
+                    camera.apply(tile)
 
-                    for mob in mobs_group:
-                        camera.apply(mob)
+                for mob in mobs_group:
+                    camera.apply(mob)
 
-                    camera.apply(player)
-                    for gear_element in player.gear_sprites:
-                        gear_element.rect.x = player.rect.x
-                        gear_element.rect.y = player.rect.y
+                camera.apply(player)
+                for gear_element in player.gear_sprites:
+                    gear_element.rect.x = player.rect.x
+                    gear_element.rect.y = player.rect.y
 
-                    # Updating screen
-                    self.screen.fill((5, 50, 5))
+                # Updating screen
+                self.screen.fill(GREEN_BACKGROUND)
 
-                    self.render()
-                    mobs_group.draw(self.screen)
-                    player.draw(self.screen)
+                self.render()
+                mobs_group.draw(self.screen)
+                player.draw(self.screen)
 
-                    pygame.display.flip()
-                    clock.tick(FPS)
+                pygame.display.flip()
+                clock.tick(FPS)
 
 
 class Game:
@@ -579,7 +580,9 @@ class Game:
                         self.to_main_menu()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    lobby_map.on_click(pygame.mouse.get_pos(), player, mobs_group, camera, self.clock)
+                    on_click = lobby_map.on_click(pygame.mouse.get_pos(), player, mobs_group, camera, self.clock)
+                    if on_click == "battle":
+                        self.battle()
 
             # Updating camera and moving sprites accordingly
             camera.update(player)
@@ -596,7 +599,7 @@ class Game:
                 gear_element.rect.y = player.rect.y
 
             # Updating screen
-            self.screen.fill((5, 50, 5))
+            self.screen.fill(GREEN_BACKGROUND)
 
             lobby_map.render()
             mobs_group.draw(self.screen)

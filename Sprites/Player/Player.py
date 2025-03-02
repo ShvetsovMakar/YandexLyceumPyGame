@@ -18,6 +18,10 @@ class Player(pygame.sprite.Sprite):
 
         with open(f"Data/Characters/{self.name}.json", "r") as file:
             data = json.load(file)
+            self.level = data["level"]
+            self.XP = data["XP"]
+            self.gold = data["gold"]
+            self.skin = data["skin"]
 
             # Setting up player's body parts images
 
@@ -93,3 +97,54 @@ class Player(pygame.sprite.Sprite):
             screen.blit(self.head_image, self.rect)
         else:
             self.helmet.draw(screen)
+
+    def save(self):
+        character_data = {"name": self.name,
+                          "skin": self.skin,
+                          "level": self.level,
+                          "XP": self.XP,
+                          "gear": {
+                              "weapon": {
+                                  "type": None,
+                                  "level": None
+                              },
+                              "armor": {
+                                  "helmet": {
+                                      "type": None,
+                                      "level": None
+                                  },
+                                  "breastplate": {
+                                      "type": None,
+                                      "level": None
+                                  },
+                                  "leggings": {
+                                      "type": None,
+                                      "level": None
+                                  }
+                              }
+                          },
+                          "gold": self.gold,
+                          "inventory": []
+                          }
+
+        if self.weapon is not None:
+            character_data["gear"]["weapon"] = {"type": self.weapon.type,
+                                                "level": self.weapon.level}
+
+        if self.helmet is not None:
+            character_data["gear"]["armor"]["helmet"] = {"type": self.helmet.type,
+                                                         "level": self.helmet.level}
+
+        if self.breastplate is not None:
+            character_data["gear"]["armor"]["breastplate"] = {"type": self.breastplate.type,
+                                                              "level": self.breastplate.level}
+
+        if self.leggings is not None:
+            character_data["gear"]["armor"]["leggings"] = {"type": self.leggings.type,
+                                                           "level": self.leggings.level}
+
+        with open(f"Data/Characters/{self.name}.json", "w") as file:
+            json.dump(character_data, file, indent=4)
+
+        with open("Data/CurrentCharacter/player.json", "w") as file:
+            json.dump(character_data, file, indent=4)

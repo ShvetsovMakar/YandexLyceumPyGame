@@ -10,5 +10,5 @@ class Enemy(Mob):
         self.damage = damage
         self.health = health
 
-    def on_click(self):
+    def on_click(self, player):
         pass
