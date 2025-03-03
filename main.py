@@ -716,7 +716,7 @@ class Game:
         walkable_tiles = []
         for y in range(len(battle_map.board)):
             if battle_map.board[y][0].walkable:
-                walkable_tiles.append((0, y * self.height // 10))
+                walkable_tiles.append((battle_map.board[y][0].rect.x, battle_map.board[y][0].rect.y))
 
         player_group = pygame.sprite.Group()
         player = Player(character_name,
@@ -735,7 +735,7 @@ class Game:
         walkable_tiles = []
         for y in range(len(battle_map.board)):
             if battle_map.board[y][len(battle_map.board[y]) - 1].walkable:
-                walkable_tiles.append(((len(battle_map.board[y]) - 1) * self.height // 10, y * self.height // 10))
+                walkable_tiles.append((battle_map.board[y][-1].rect.x, battle_map.board[y][-1].rect.y))
 
         forester = Forester("Graphics/Villagers/Forester.png",
                             random.choice(walkable_tiles),
@@ -747,7 +747,7 @@ class Game:
         for y in range(len(battle_map.board)):
             for x in range(len(battle_map.board[y])):
                 if battle_map.board[y][x].walkable:
-                    walkable_tiles.append((x * self.height // 10, y * self.height // 10))
+                    walkable_tiles.append((battle_map.board[y][x].rect.x, battle_map.board[y][x].rect.y))
 
         for i in range(min(len(walkable_tiles) // 2, ENEMIES_AMOUNT)):
             position = random.choice(walkable_tiles)
