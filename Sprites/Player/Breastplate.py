@@ -24,7 +24,7 @@ class Breastplate(pygame.sprite.Sprite):
         data = BREASTPLATES[self.type]
 
         self.level = level
-        self.damage = data["protection"] * BREASTPLATE_ENHANCEMENT ** self.level
+        self.protection = data["protection"] * BREASTPLATE_ENHANCEMENT ** self.level
         self.agility = data["agility"]
 
     def draw(self, screen):

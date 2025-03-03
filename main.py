@@ -778,6 +778,67 @@ class Game:
                     if on_click == "exit":
                         self.battle_ending(player)
 
+                    # Moving enemies
+                    for enemy in enemies:
+                        if enemy.health <= 0:
+                            continue
+
+                        # Determining enemy's position on the board
+                        for y in range(len(battle_map.board)):
+                            for x in range(len(battle_map.board[y])):
+                                if (battle_map.board[y][x].rect.x == enemy.rect.x and
+                                        battle_map.board[y][x].rect.y == enemy.rect.y):
+                                    enemy_board_pos = (y, x)
+                                    break
+
+                        # Determining walkable tiles
+                        walkable_tiles = []
+                        for dy in range(-1, 2):
+                            for dx in range(-1, 2):
+                                y = enemy_board_pos[0] + dy
+                                x = enemy_board_pos[1] + dx
+
+                                if y < 0 or y >= len(battle_map.board):
+                                    continue
+
+                                if x < 0 or x >= len(battle_map.board[y]):
+                                    continue
+
+                                if battle_map.board[y][x].walkable:
+                                    walkable_tiles.append(battle_map.board[y][x])
+
+                        # Checking if enemy can hit the player
+                        for tile in walkable_tiles:
+                            if tile.rect.x == player.rect.x and tile.rect.y == player.rect.y:
+                                agility = player.agility
+                                protection = 0
+
+                                gear_elements = [player.helmet, player.breastplate, player.leggings]
+                                for gear_element in gear_elements:
+                                    if gear_element is not None:
+                                        agility += gear_element.agility
+                                        protection += gear_element.protection
+
+                                if agility >= random.randint(1, 101):
+                                    continue
+
+                                player.health -= enemy.damage * (1 - protection)
+                                if player.health <= 0:
+                                    self.defeat()
+                                break
+
+                        else:
+                            # Removing tiles with enemies
+                            for e in enemies:
+                                for tile in walkable_tiles:
+                                    if e.rect.x == tile.rect.x and e.rect.y == tile.rect.y and e.health > 0:
+                                        walkable_tiles.remove(tile)
+                                        break
+
+                            if walkable_tiles:
+                                tile = random.choice(walkable_tiles)
+                                enemy.move(tile.rect.x, tile.rect.y)
+
             # Updating camera and moving sprites accordingly
             camera.update(player)
 
@@ -798,6 +859,84 @@ class Game:
             battle_map.render()
             mobs_group.draw(self.screen)
             player.draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
+
+    def defeat(self):
+        # Initializing buttons
+        buttons = pygame.sprite.Group()
+
+        width = self.width // 4
+        height = self.height // 4
+
+        to_main_menu_button = Button('Graphics/Defeat/ToMainMenuButton/basic.png',
+                                     'Graphics/Defeat/ToMainMenuButton/hovered_on.png',
+                                     (self.width // 8, self.height // 2 - height),
+                                     (width, height),
+                                     buttons,
+                                     on_click_battle_ending.to_main_menu)
+
+        to_lobby_button = Button('Graphics/Defeat/ToLobbyButton/basic.png',
+                                 'Graphics/Defeat/ToLobbyButton/hovered_on.png',
+                                 (self.width // 8 * 5, self.height // 2 - height),
+                                 (width, height),
+                                 buttons,
+                                 on_click_battle_ending.to_lobby)
+
+        # Initializing labels
+        labels = pygame.sprite.Group()
+
+        background = Label('Graphics/Defeat/Background/basic.png',
+                           (0, 0),
+                           (self.width, self.height),
+                           labels)
+
+        # Initializing text boxes
+        text_boxes = pygame.sprite.Group()
+
+        collected_gold = TextBox(f"Game Over!",
+                                 pygame.font.Font("Fonts/Norse/bold.otf", self.width // 40),
+                                 (self.width // 2, self.height // 2 - self.height // 4 - self.width // 40),
+                                 text_boxes,
+                                 (255, 0, 0),
+                                 (255, 255, 255),
+                                 (0, 0, 0))
+
+        # Defeat loop
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in buttons:
+                        if button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if not button.rect.collidepoint(pygame.mouse.get_pos()):
+                                continue
+
+                            if button.on_click():  # To lobby
+                                self.lobby()
+                            else:  # To main menu
+                                self.main_menu()
+
+                            break
+
+            # Updating buttons' images
+            for button in buttons:
+                if button.rect.collidepoint(pygame.mouse.get_pos()):
+                    button.set_hovered_on_image()
+                else:
+                    button.set_basic_image()
+
+            # Updating screen
+            self.screen.fill((0, 0, 0))
+
+            labels.draw(self.screen)
+            buttons.draw(self.screen)
+            for text_box in text_boxes:
+                text_box.draw(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)

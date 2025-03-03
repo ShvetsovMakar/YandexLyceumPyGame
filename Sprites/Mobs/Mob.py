@@ -16,5 +16,9 @@ class Mob(pygame.sprite.Sprite):
         self.rect.x = position[0]
         self.rect.y = position[1]
 
+    def move(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
     def draw(self, screen):
         screen.blit(self.image, self.rect)

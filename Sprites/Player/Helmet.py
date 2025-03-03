@@ -24,7 +24,7 @@ class Helmet(pygame.sprite.Sprite):
         data = HELMETS[self.type]
 
         self.level = level
-        self.damage = data["protection"] * HELMET_ENHANCEMENT ** self.level
+        self.protection = data["protection"] * HELMET_ENHANCEMENT ** self.level
         self.agility = data["agility"]
 
     def draw(self, screen):

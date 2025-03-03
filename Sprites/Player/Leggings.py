@@ -24,7 +24,7 @@ class Leggings(pygame.sprite.Sprite):
         data = LEGGINGS[self.type]
 
         self.level = level
-        self.damage = data["protection"] * LEGGINGS_ENHANCEMENT ** self.level
+        self.protection = data["protection"] * LEGGINGS_ENHANCEMENT ** self.level
         self.agility = data["agility"]
 
     def draw(self, screen):
