@@ -750,6 +750,8 @@ class Game:
             for x in range(len(battle_map.board[y])):
                 if battle_map.board[y][x].walkable:
                     walkable_tiles.append((battle_map.board[y][x].rect.x, battle_map.board[y][x].rect.y))
+        walkable_tiles.remove((player.rect.x, player.rect.y))
+        walkable_tiles.remove((forester.rect.x, forester.rect.y))
 
         for i in range(min(len(walkable_tiles) // 2, ENEMIES_AMOUNT)):
             position = random.choice(walkable_tiles)
@@ -830,10 +832,13 @@ class Game:
                                 break
 
                         else:
-                            # Removing tiles with enemies
-                            for e in enemies:
+                            # Removing tiles with mobs
+                            for mob in mobs_group:
                                 for tile in walkable_tiles:
-                                    if e.rect.x == tile.rect.x and e.rect.y == tile.rect.y and e.health > 0:
+                                    if mob.rect.x == tile.rect.x and mob.rect.y == tile.rect.y:
+                                        if mob in enemies and mob.health <= 0:
+                                            continue
+
                                         walkable_tiles.remove(tile)
                                         break
 
