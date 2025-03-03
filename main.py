@@ -742,7 +742,7 @@ class Game:
         # Determining forester's position on the battle map
         walkable_tiles = []
         for y in range(len(battle_map.board)):
-            if battle_map.board[y][len(battle_map.board[y]) - 1].walkable:
+            if battle_map.board[y][-1].walkable:
                 walkable_tiles.append((battle_map.board[y][-1].rect.x, battle_map.board[y][-1].rect.y))
 
         forester = Forester(("Graphics/Villagers/Forester/Frame1.png",
