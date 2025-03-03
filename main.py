@@ -248,6 +248,7 @@ class Map:
                 camera.apply(tile)
 
             for mob in mobs_group:
+                mob.update()
                 camera.apply(mob)
 
             camera.apply(player)
@@ -653,13 +654,17 @@ class Game:
         # Creating mobs
         mobs_group = pygame.sprite.Group()
 
-        merchant = Merchant("Graphics/Villagers/Merchant.png",
+        merchant = Merchant(("Graphics/Villagers/Merchant/Frame1.png",
+                             "Graphics/Villagers/Merchant/Frame2.png",
+                             "Graphics/Villagers/Merchant/Frame3.png"),
                             (self.height // 10 * MERCHANT_POSITION[1],
                              self.height // 10 * MERCHANT_POSITION[0]),
                             (self.height // 10, self.height // 10),
                             mobs_group)
 
-        warrior = Warrior("Graphics/Villagers/Warrior.png",
+        warrior = Warrior(("Graphics/Villagers/Warrior/Frame1.png",
+                           "Graphics/Villagers/Warrior/Frame2.png",
+                           "Graphics/Villagers/Warrior/Frame3.png"),
                           (self.height // 10 * VILLAGER_POSITION[1],
                            self.height // 10 * VILLAGER_POSITION[0]),
                           (self.height // 10, self.height // 10),
@@ -688,6 +693,7 @@ class Game:
                 camera.apply(tile)
 
             for mob in mobs_group:
+                mob.update()
                 camera.apply(mob)
 
             camera.apply(player)
@@ -739,7 +745,9 @@ class Game:
             if battle_map.board[y][len(battle_map.board[y]) - 1].walkable:
                 walkable_tiles.append((battle_map.board[y][-1].rect.x, battle_map.board[y][-1].rect.y))
 
-        forester = Forester("Graphics/Villagers/Forester.png",
+        forester = Forester(("Graphics/Villagers/Forester/Frame1.png",
+                             "Graphics/Villagers/Forester/Frame2.png",
+                             "Graphics/Villagers/Forester/Frame3.png"),
                             random.choice(walkable_tiles),
                             (self.height // 10, self.height // 10),
                             mobs_group)
@@ -759,7 +767,9 @@ class Game:
 
             enemy_type = random.choice(ENEMIES)
 
-            enemies.append(Enemy(f"Graphics/Enemies/{enemy_type}.png",
+            enemies.append(Enemy((f"Graphics/Enemies/{enemy_type}/Frame1.png",
+                                  f"Graphics/Enemies/{enemy_type}/Frame2.png",
+                                  f"Graphics/Enemies/{enemy_type}/Frame3.png"),
                                  position,
                                  (self.height // 10, self.height // 10),
                                  mobs_group,
@@ -853,6 +863,7 @@ class Game:
                 camera.apply(tile)
 
             for mob in mobs_group:
+                mob.update()
                 camera.apply(mob)
 
             camera.apply(player)
