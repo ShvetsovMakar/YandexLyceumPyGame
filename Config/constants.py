@@ -26,6 +26,6 @@ ENEMIES_DAMAGE = {
 }
 
 ENEMIES_HEALTH = {
-    "Bandit": 250,
-    "Viking": 300
+    "Bandit": 150,
+    "Viking": 200
 }
