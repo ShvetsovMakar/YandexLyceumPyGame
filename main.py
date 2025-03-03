@@ -205,63 +205,65 @@ class Map:
         if tile is None:
             return
 
-        # Checking if player has clicked on mob
-        for mob in mobs_group:
-            if mob.rect.x == tile.rect.x and mob.rect.y == tile.rect.y:
-                return mob.on_click(player)
-
         # Defining player and tile position on the map
         player_pos = [player.rect.x // self.tile_width, player.rect.y // self.tile_height]
         tile_pos = [tile.rect.x // self.tile_width, tile.rect.y // self.tile_height]
 
         # Checking if player is able to move to this tile
-        if -1 <= player_pos[0] - tile_pos[0] <= 1 and -1 <= player_pos[1] - tile_pos[1] <= 1 and tile.walkable:
-            dx = tile.rect.x - player.rect.x
-            dy = tile.rect.y - player.rect.y
+        if not (-1 <= player_pos[0] - tile_pos[0] <= 1 and -1 <= player_pos[1] - tile_pos[1] <= 1 and tile.walkable):
+            return
 
-            # Moving player to clicked tile by pixels
-            while dx != 0 or dy != 0:
-                if dx > 0:
-                    move = min(dx, player.width // 5)
-                    player.rect.x += move
-                    dx -= move
-                elif dx < 0:
-                    move = min(dx * -1, player.width // 5)
-                    player.rect.x -= move
-                    dx += move
+        # Checking if player has clicked on mob
+        for mob in mobs_group:
+            if mob.rect.x == tile.rect.x and mob.rect.y == tile.rect.y:
+                return mob.on_click(player)
 
-                if dy > 0:
-                    move = min(dy, player.height // 5)
-                    player.rect.y += move
-                    dy -= move
-                elif dy < 0:
-                    move = min(dy * -1, player.height // 5)
-                    player.rect.y -= move
-                    dy += move
+        # Moving player to clicked tile by pixels
+        dx = tile.rect.x - player.rect.x
+        dy = tile.rect.y - player.rect.y
 
-                # Updating camera and moving sprites accordingly
-                camera.update(player)
+        while dx != 0 or dy != 0:
+            if dx > 0:
+                move = min(dx, player.width // 5)
+                player.rect.x += move
+                dx -= move
+            elif dx < 0:
+                move = min(dx * -1, player.width // 5)
+                player.rect.x -= move
+                dx += move
 
-                for tile in self.tiles_group:
-                    camera.apply(tile)
+            if dy > 0:
+                move = min(dy, player.height // 5)
+                player.rect.y += move
+                dy -= move
+            elif dy < 0:
+                move = min(dy * -1, player.height // 5)
+                player.rect.y -= move
+                dy += move
 
-                for mob in mobs_group:
-                    camera.apply(mob)
+            # Updating camera and moving sprites accordingly
+            camera.update(player)
 
-                camera.apply(player)
-                for gear_element in player.gear_sprites:
-                    gear_element.rect.x = player.rect.x
-                    gear_element.rect.y = player.rect.y
+            for tile in self.tiles_group:
+                camera.apply(tile)
 
-                # Updating screen
-                self.screen.fill(GREEN_BACKGROUND)
+            for mob in mobs_group:
+                camera.apply(mob)
 
-                self.render()
-                mobs_group.draw(self.screen)
-                player.draw(self.screen)
+            camera.apply(player)
+            for gear_element in player.gear_sprites:
+                gear_element.rect.x = player.rect.x
+                gear_element.rect.y = player.rect.y
 
-                pygame.display.flip()
-                clock.tick(FPS)
+            # Updating screen
+            self.screen.fill(GREEN_BACKGROUND)
+
+            self.render()
+            mobs_group.draw(self.screen)
+            player.draw(self.screen)
+
+            pygame.display.flip()
+            clock.tick(FPS)
 
 
 class Game:
