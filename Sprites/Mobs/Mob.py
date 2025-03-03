@@ -40,7 +40,7 @@ class Mob(pygame.sprite.Sprite):
 
     def update(self):
         self.animation_counter += 1
-        self.animation_counter %= 21
+        self.animation_counter %= 11
 
         if self.animation_counter == 0:
             self.frame_index += 1
